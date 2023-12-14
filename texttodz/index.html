@@ -58,6 +58,8 @@
             }
             function get(c,w,h)
             {
+                var res="";
+
                 var font="宋体";
                 canvas.width=w;
                 canvas.height=h;
@@ -78,11 +80,15 @@
                     var x=0;
                     for(var j=0;j<w;j++)
                     {
-                        if(data[i*w*4+j*4]!=0) document.write("1");
-                        else document.write("0");
+                        if(data[i*w*4+j*4]!=0) document.write("1"),res+="1";
+                        else document.write("0"),res+="0";
                     }
                     document.write("</p>");
                 }
+                var jsonVar = {
+                    text: res,
+                };
+                document.body.innerHTML = JSON.stringify(jsonVar);
             }    
 		// --></script>
 	<body>
