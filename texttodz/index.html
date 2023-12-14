@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>获取字模</title>
+</head>
+<body>
+        <script>
+            function getQueryString(name)
+            {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(decodeURI(r[2]));
+                return null;
+            }
+            function to_int(c)
+            {
+                var res=0;
+                for(var i=0;i<c.length;i++) res*=10,res+=(c[i]-'0');
+                return res;
+            }
+
+            var canvas=document.createElement("canvas");
+            var ctx=canvas.getContext("2d");
+            
+            var num1=to_int(getQueryString("w")),num2=to_int(getQueryString("h")),str=getQueryString("text");
+            var cnt_dh=0;
+            console.log(num1);
+            console.log(num2);
+            console.log(str);
+
+            get(str,num1,num2);
+
+            function CheckChinese (str)
+            {
+                var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+                return reg.test(str);
+            }
+            function fill(c,w,h)
+            {
+                var len=0,bh=0;
+                var dq="";
+                for(var i=0;i<c.length;i++)
+                {
+                    if(CheckChinese(c[i])) len+=16;
+                    else len+=8;
+                    if(len>w)
+                    {
+                        ctx.fillText(dq,0,bh*16);
+                        if(CheckChinese(c[i])) len=16;
+                        else len=8;
+                        bh++;
+                        dq=c[i];
+                    }
+                    else dq+=c[i];
+                }
+                ctx.fillText(dq,0,bh*16);
+            }
+            function get(c,w,h)
+            {
+                var font="宋体";
+                canvas.width=w;
+                canvas.height=h;
+                ctx.textAlign="left";
+                ctx.textBaseline="top";
+                ctx.font="16px '"+font+"'";
+
+                ctx.fillStyle="#000000";
+                ctx.fillRect(0,0,w,h);
+                ctx.fillStyle="#FFFFFF";
+                fill(c,w,h);
+
+                var data=ctx.getImageData(0,0,w,h).data;
+                console.log(data);
+                for(var i=0;i<h;i++)
+                {
+                    document.write("<p>");
+                    var x=0;
+                    for(var j=0;j<w;j++)
+                    {
+                        if(data[i*w*4+j*4]!=0) document.write("1");
+                        else document.write("0");
+                    }
+                    document.write("</p>");
+                }
+            }    
+		// --></script>
+	<body>
+</html>
