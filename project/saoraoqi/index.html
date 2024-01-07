@@ -145,7 +145,7 @@
         })    
         */
 
-        var light_mode=0,fmq_mode=0;
+        var light_mode=0,fmq_mode=0,pig_mode=0;
         function light()
         {
             if(light_mode==0)
@@ -186,12 +186,34 @@
         window.onload = function() {
             document.getElementById("fmq_ball").addEventListener("touchstart",fmq_open);
             document.getElementById("fmq_ball").addEventListener("touchend",fmq_close);
+            
         };
 
         function setbulb(x)
         {
             if(x==1) document.getElementById("bulb").style.backgroundColor='rgb(28,200,138)',document.getElementById("bulb").style.boxShadow="rgb(28,200,138) 1px 1px 8px";
             else document.getElementById("bulb").style.backgroundColor='rgb(231,74,59)',document.getElementById("bulb").style.boxShadow="rgb(231,74,59) 1px 1px 8px";
+        }
+
+        function pig()
+        {
+            if(pig_mode==0)
+            {
+                send('fqr/saoraoqi/pig','1');
+                document.getElementById("pig_kuang").style.backgroundColor='rgb(0, 187, 16)';
+                document.getElementById("pig_ball").style.marginLeft='31px';
+                document.getElementById("pig_ball").className='open-kg-ball';
+                document.getElementById("pig_kuang").className="open-kg-kuang";
+            }
+            else
+            {
+                send('fqr/saoraoqi/pig','0');
+                document.getElementById("pig_kuang").style.backgroundColor='rgb(204,204,204)';
+                document.getElementById("pig_ball").style.marginLeft='3px';
+                document.getElementById("pig_ball").className='close-kg-ball';
+                document.getElementById("pig_kuang").className="close-kg-kuang";
+            }
+            pig_mode=!pig_mode;
         }
 
     </script>
@@ -229,7 +251,14 @@
                 <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht2"> </div>
             </center>
         </div>
-
+        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 230px;">
+            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">显示小猪</p></center>
+            <center>
+                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;  user-select: none;" id="pig_kuang" onmouseup="pig()">
+                    <div style="background-color: white; width: 24px; height: 24px; border-radius: 15px; margin-left: 3px; margin-top:3px; position: absolute" id="pig_ball"></div>
+                </div>
+            </center>
+        </div>
     </div>
 
 </body>
