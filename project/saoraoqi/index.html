@@ -7,6 +7,8 @@
 </head>
 <body style="background-color: rgb(248,248,248)">
     <style>
+        *{-webkit-tap-highlight-color:transparent;}
+
         @keyframes open-kuang {
             0% { background-color: rgb(204,204,204); }
             100% { background-color: rgb(0, 187, 16); }
@@ -201,7 +203,7 @@
         <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 120px; top: 10px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">灯光</p></center>
             <center>
-                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;" id="light_kuang" onmouseup="light()">
+                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;  user-select: none;" id="light_kuang" onmouseup="light()">
                     <div style="background-color: white; width: 24px; height: 24px; border-radius: 15px; margin-left: 3px; margin-top:3px; position: absolute" id="light_ball"></div>
                 </div>
             </center>
@@ -210,7 +212,7 @@
         <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 230px; top: 10px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">蜂鸣器</p></center>
             <center>
-                <div style="width: 28px; height: 28px; border-radius: 20px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;" id="fmq_ball" onmousedown="fmq_open()" onmouseup="fmq_close()" onmouseout="fmq_close()"></div>
+                <div style="width: 28px; height: 28px; border-radius: 20px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none;" id="fmq_ball" onmousedown="fmq_open()" onmouseup="fmq_close()" onmouseout="fmq_close()"></div>
             </center>
         </div>
         
