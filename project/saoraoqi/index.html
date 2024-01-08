@@ -2,265 +2,89 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>小猪骚扰器</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>获取字模</title>
 </head>
-<body style="background-color: rgb(248,248,248)">
-    <style>
-        *{-webkit-tap-highlight-color:transparent;}
-
-        @keyframes open-kuang {
-            0% { background-color: rgb(204,204,204); }
-            100% { background-color: rgb(0, 187, 16); }
-        }
-        .open-kg-kuang
-        {
-            animation: open-kuang 200ms infinite linear;
-            animation-iteration-count: 1;
-        }
-
-
-        @keyframes close-kuang {
-            0% { background-color: rgb(0, 187, 16); }
-            100% { background-color: rgb(204,204,204); }
-        }
-        .close-kg-kuang
-        {
-            animation: close-kuang 200ms infinite linear;
-            animation-iteration-count: 1;
-        }
-
-        @keyframes open-ball {
-            0% { margin-left: 3px; }
-            100% { margin-left: 31px; }
-        }
-        .open-kg-ball
-        {
-            animation: open-ball 200ms infinite linear;
-            animation-iteration-count: 1;
-        }
-
-        @keyframes close-ball {
-            0% { margin-left: 31px; }
-            100% { margin-left: 3px; }
-        }
-        .close-kg-ball
-        {
-            animation: close-ball 200ms infinite linear;
-            animation-iteration-count: 1;
-        }
-    </style>
-    <script src="https://f.fqr-qwq.cn/project/mqtt.min.js"></script>
-    <script>
-        document.onselectstart=function(){return false}
-        document.ondragstart=function(){return false}
-        
-        var cnt_msg=0;
-        var timer1 = setInterval(function() {
-            if(cnt_msg) setbulb(1);
-            else setbulb(0);
-            cnt_msg=0;
-        }, 2500);
-
-        function getRandomString(length) {
-            var result = '';
-            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            var charactersLength = characters.length;
-            for (var i = 0; i < length; i++) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-            }
-            return result;
-        }
-        // 连接选项
-        const options = {
-            clean: true, // true: 清除会话, false: 保留会话
-            connectTimeout: 4000, // 超时时间
-            // 认证信息
-            clientId: 'saoraoqi-'+getRandomString(16),	//客户端ID
-            username: 'emqx', //连接用户名
-            password: 'public',//连接密码，默认为public,新版本登录后台界面会让你修改密码
-            // 心跳时间
-            keepalive: 60,
-        }
-
-        // 连接字符串, 通过协议指定使用的连接方式
-        const connectUrl = 'wss://broker.emqx.io:8084/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
-        const client = mqtt.connect(connectUrl, options)
-
-        client.on('connect', () => {
-            console.log('连接成功')
-            // 订阅多个主题
-            client.subscribe(
-                ['fqr/saoraoqi-o/#'], //主题
-                { qos: 1 },  
-                (err) => {
-                    console.log(err || '订阅成功')
-                },
-            );
-            // 发布消息
-        })
-        //失败重连
-        client.on('reconnect', (error) => {
-            console.log('正在重连:', error)
-        })
-        //连接失败
-        client.on('error', (error) => {
-            console.log('连接失败:', error)
-        })
-        //接收消息
-        client.on('message', (topic, message) => {
-            console.log('收到消息：', topic, message.toString())
-            cnt_msg++;
-
-            if(topic=="fqr/saoraoqi-o/dht1")
+<body>
+        <script>
+            function getQueryString(name)
             {
-                document.getElementById("dht1").innerText=message;
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+                var r = window.location.search.substr(1).match(reg);
+                if (r != null) return unescape(decodeURI(r[2]));
+                return null;
             }
-
-            if(topic=="fqr/saoraoqi-o/dht2")
+            function to_int(c)
             {
-                document.getElementById("dht2").innerText=message;
+                var res=0;
+                for(var i=0;i<c.length;i++) res*=10,res+=(c[i]-'0');
+                return res;
             }
-        })
-        
-        function send(topic,value)
-        {
-            client.publish(topic, value, (err) => {console.log(err || ("向“"+topic+"”发送“"+value+'”，发布成功'))});
-        }
 
-        /*
-        订阅消息：
-        client.subscribe(
-            ['tourist_enter', 'message_arrived'], //主题
-            { qos: 1 },  
-            (err) => {
-                console.log(err || '订阅成功')
-            },
-        );
-        发布消息：
-        client.publish('tourist_enter', 'Hello EMQ X', (err) => {console.log(err || '发布成功')});
-        接收消息：
-        client.on('message', (topic, message) => {
-            console.log('收到消息：', topic, message.toString())
-        })    
-        */
-
-        var light_mode=0,fmq_mode=0,pig_mode=0;
-        function light()
-        {
-            if(light_mode==0)
-            {
-                send('fqr/saoraoqi/light','1');
-                document.getElementById("light_kuang").style.backgroundColor='rgb(0, 187, 16)';
-                document.getElementById("light_ball").style.marginLeft='31px';
-                document.getElementById("light_ball").className='open-kg-ball';
-                document.getElementById("light_kuang").className="open-kg-kuang";
-            }
-            else
-            {
-                send('fqr/saoraoqi/light','0');
-                document.getElementById("light_kuang").style.backgroundColor='rgb(204,204,204)';
-                document.getElementById("light_ball").style.marginLeft='3px';
-                document.getElementById("light_ball").className='close-kg-ball';
-                document.getElementById("light_kuang").className="close-kg-kuang";
-            }
-            light_mode=!light_mode;
-        }
-
-
-        
-        function fmq_open()
-        {
-            send('fqr/saoraoqi/fmq','1');
-            document.getElementById("fmq_ball").style.backgroundColor='rgb(0, 187, 16)';
-            fmq_mode=1;
-        }
-
-        function fmq_close()
-        {
-            if(!fmq_mode) return;
-            send('fqr/saoraoqi/fmq','0');
-            document.getElementById("fmq_ball").style.backgroundColor='rgb(255, 255, 255)';
-            fmq_mode=0;
-        }
-        window.onload = function() {
-            document.getElementById("fmq_ball").addEventListener("touchstart",fmq_open);
-            document.getElementById("fmq_ball").addEventListener("touchend",fmq_close);
+            var canvas=document.createElement("canvas");
+            var ctx=canvas.getContext("2d");
+            ctx.willReadFrequently = true;
             
-        };
+            var num1=to_int(getQueryString("w")),num2=to_int(getQueryString("h")),str=getQueryString("text");
+            var cnt_dh=0;
+            console.log(num1);
+            console.log(num2);
+            console.log(str);
 
-        function setbulb(x)
-        {
-            if(x==1) document.getElementById("bulb").style.backgroundColor='rgb(28,200,138)',document.getElementById("bulb").style.boxShadow="rgb(28,200,138) 1px 1px 8px";
-            else document.getElementById("bulb").style.backgroundColor='rgb(231,74,59)',document.getElementById("bulb").style.boxShadow="rgb(231,74,59) 1px 1px 8px";
-        }
+            get(str,num1,num2);
 
-        function pig()
-        {
-            if(pig_mode==0)
+            function CheckChinese (str)
             {
-                send('fqr/saoraoqi/pig','1');
-                document.getElementById("pig_kuang").style.backgroundColor='rgb(0, 187, 16)';
-                document.getElementById("pig_ball").style.marginLeft='31px';
-                document.getElementById("pig_ball").className='open-kg-ball';
-                document.getElementById("pig_kuang").className="open-kg-kuang";
+                var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+                return reg.test(str);
             }
-            else
+            function fill(c,w,h)
             {
-                send('fqr/saoraoqi/pig','0');
-                document.getElementById("pig_kuang").style.backgroundColor='rgb(204,204,204)';
-                document.getElementById("pig_ball").style.marginLeft='3px';
-                document.getElementById("pig_ball").className='close-kg-ball';
-                document.getElementById("pig_kuang").className="close-kg-kuang";
+                var len=0,bh=0;
+                var dq="";
+                for(var i=0;i<c.length;i++)
+                {
+                    if(CheckChinese(c[i])) len+=16;
+                    else len+=8;
+                    if(len>w)
+                    {
+                        ctx.fillText(dq,0,bh*16);
+                        if(CheckChinese(c[i])) len=16;
+                        else len=8;
+                        bh++;
+                        dq=c[i];
+                    }
+                    else dq+=c[i];
+                }
+                ctx.fillText(dq,0,bh*16);
             }
-            pig_mode=!pig_mode;
-        }
+            function get(c,w,h)
+            {
+                var font="宋体";
+                canvas.width=w;
+                canvas.height=h;
+                ctx.textAlign="left";
+                ctx.textBaseline="top";
+                ctx.font="16px '"+font+"'";
 
-    </script>
-    <div>
-        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 10px;">
-            <center><div style="width: 50px; height: 50px; border-radius: 30px; background-color: rgb(204,204,204); margin-top: 25px; box-shadow: rgb(204,204,204) 1px 1px 8px;" id="bulb"></div></center>
-        </div>
+                ctx.fillStyle="#000000";
+                ctx.fillRect(0,0,w,h);
+                ctx.fillStyle="#FFFFFF";
+                fill(c,w,h);
 
-        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 120px; top: 10px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">灯光</p></center>
-            <center>
-                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;  user-select: none;" id="light_kuang" onmouseup="light()">
-                    <div style="background-color: white; width: 24px; height: 24px; border-radius: 15px; margin-left: 3px; margin-top:3px; position: absolute" id="light_ball"></div>
-                </div>
-            </center>
-        </div>
-
-        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 230px; top: 10px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">蜂鸣器</p></center>
-            <center>
-                <div style="width: 28px; height: 28px; border-radius: 20px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none;" id="fmq_ball" onmousedown="fmq_open()" onmouseup="fmq_close()" onmouseout="fmq_close()"></div>
-            </center>
-        </div>
-        
-        <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 120px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">温度</p></center>
-            <center>
-                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht1"> </div>
-            </center>
-        </div>
-
-        <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 175px; top: 120px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">湿度</p></center>
-            <center>
-                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht2"> </div>
-            </center>
-        </div>
-        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 230px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">显示小猪</p></center>
-            <center>
-                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;  user-select: none;" id="pig_kuang" onmouseup="pig()">
-                    <div style="background-color: white; width: 24px; height: 24px; border-radius: 15px; margin-left: 3px; margin-top:3px; position: absolute" id="pig_ball"></div>
-                </div>
-            </center>
-        </div>
-    </div>
-
-</body>
+                var data=ctx.getImageData(0,0,w,h).data;
+                console.log(data);
+                for(var i=0;i<h;i++)
+                {
+                    var x=0;
+                    for(var j=0;j<w;j++)
+                    {
+                        if(data[i*w*4+j*4]!=0) x+=1<<j;
+                        //else document.write("0"),res+="0";
+                    }
+                    document.write(x);
+                    document.write(",");
+                }
+            }    
+		// --></script>
+	<body>
 </html>
-
