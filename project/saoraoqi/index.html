@@ -310,6 +310,8 @@
                 
                 reader.onloadend = function() {
                     document.getElementById("previewImage").setAttribute('src', reader.result); // 将图像路径赋值给img标签的src属性
+                    cxt.fillStyle="#FFFFFF";
+                    cxt.fillRect(0,0,240,240); 
                 };
                 
                 reader.readAsDataURL(file); // 开始读取文件内容
