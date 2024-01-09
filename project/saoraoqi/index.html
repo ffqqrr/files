@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>小猪骚扰器</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 </head>
 <body style="background-color: rgb(248,248,248)">
     <style>
@@ -168,7 +167,7 @@
         }
 
         // 连接字符串, 通过协议指定使用的连接方式
-        const connectUrl = 'ws://39.105.211.227:8083/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
+        const connectUrl = 'wss://39.105.211.227:8084/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
         const client = mqtt.connect(connectUrl, options)
 
         client.on('connect', () => {
