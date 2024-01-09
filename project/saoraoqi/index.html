@@ -160,14 +160,14 @@
             connectTimeout: 4000, // 超时时间
             // 认证信息
             clientId: 'saoraoqi-'+getRandomString(16),	//客户端ID
-            username: 'emqx', //连接用户名
-            password: 'public',//连接密码，默认为public,新版本登录后台界面会让你修改密码
+            username: 'FQR', //连接用户名
+            password: 'fqrzn081230',//连接密码，默认为public,新版本登录后台界面会让你修改密码
             // 心跳时间
             keepalive: 60,
         }
 
         // 连接字符串, 通过协议指定使用的连接方式
-        const connectUrl = 'ws://broker.hivemq.com:8000/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
+        const connectUrl = 'ws://121.43.238.189:8083/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
         const client = mqtt.connect(connectUrl, options)
 
         client.on('connect', () => {
