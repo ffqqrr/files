@@ -172,7 +172,7 @@
         try {
             client = mqtt.connect(connectUrl, options)
         } catch (e) {
-            console.log("发生异常:" + e)
+            window.location="http://39.107.120.123/";
         }
 
         client.on('connect', () => {
