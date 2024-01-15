@@ -79,7 +79,7 @@
         <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 120px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">温度</p></center>
             <center>
-                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht1"> </div>
+                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px; font-size: 16px;" id="dht1"> </div>
             </center>
         </div>
 
@@ -87,29 +87,19 @@
         <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 175px; top: 120px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">湿度</p></center>
             <center>
-                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht2"> </div>
+                <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px; font-size: 16px;" id="dht2"> </div>
             </center>
         </div>
 
 
-        <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 230px;">
-            <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">显示小猪</p></center>
-            <center>
-                <div style="background-color: rgb(204,204,204); width: 60px;height: 30px; border-radius: 15px; cursor: pointer;  user-select: none;" id="pig_kuang" onmouseup="pig()">
-                    <div style="background-color: white; width: 24px; height: 24px; border-radius: 15px; margin-left: 3px; margin-top:3px; position: absolute" id="pig_ball"></div>
-                </div>
-            </center>
-        </div>
-
-
-        <div style="width: 210px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 120px; top: 230px;">
+        <div style="width: 320px; height: 155px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 230px;">
             <input type="file" id="imageInput" accept=".jpg,.jpeg,.png" style="display: none;">
             <center>
-                <button onclick="document.getElementById('imageInput').click()" style="margin-top: 10px;">选择图片</button> 
-                <button onclick="document.getElementById('imgs').style.display='block'" style="margin-top: 10px;">其它图片</button>
-                <button onclick="sendimage()" style="margin-top: 10px;">上传</button>
+                <button onclick="document.getElementById('imageInput').click()" style="margin-top: 10px; font-size: 13px;">拍摄/选择本地图片</button> 
+                <button onclick="document.getElementById('imgs').style.display='block'" style="margin-top: 10px; font-size: 13px;">其它图片</button>
+                <button onclick="sendimage()" style="margin-top: 10px; font-size: 13px;">上传</button>
             </center>
-            <center><img src="https://f.fqr-qwq.cn/project/saoraoqi/pig.jpg" alt="选择的图片" id="previewImage" style="width: 62px; height: 62px; border:1px solid rgb(204,204,204); margin-top: 2px;" width="240px" height="240px"></center>
+            <center><img src="https://f.fqr-qwq.cn/project/saoraoqi/pig.jpg" alt="选择的图片" id="previewImage" style="width: 100px; height: 100px; border:1px solid rgb(204,204,204); margin-top: 10px;" width="240px" height="240px"></center>
         </div>
 
 
@@ -141,9 +131,9 @@
         for(var i=1;i<=cnt_imgs;i++)
         {
             var newElement = document.createElement("span");
-            newElement.innerHTML = "<img src='https://f.fqr-qwq.cn/project/saoraoqi/img/"+i+".jpg' style='width: 90px; height: 90px;' width='240px' height='240px'> </img>";
-            newElement.style.width="90px";
-            newElement.style.height="90px";
+            newElement.innerHTML = "<img src='https://f.fqr-qwq.cn/project/saoraoqi/img/"+i+".jpg' style='width: 92px; height: 92px;' width='240px' height='240px'> </img>";
+            newElement.style.width="92px";
+            newElement.style.height="92px";
             newElement.onclick=Function("choose_img("+i+")");
 
             document.getElementById("imgs").appendChild(newElement);
@@ -337,6 +327,7 @@
         window.onload = function() {
             document.getElementById("fmq_ball").addEventListener("touchstart",fmq_open);
             document.getElementById("fmq_ball").addEventListener("touchend",fmq_close);
+            document.getElementById("fmq_ball").addEventListener("mouseout",fmq_close);
 
             document.getElementById("imageInput").addEventListener("change", handleFileSelect, false);
         };
@@ -347,26 +338,6 @@
             else document.getElementById("bulb").style.backgroundColor='rgb(231,74,59)',document.getElementById("bulb").style.boxShadow="rgb(231,74,59) 1px 1px 8px";
         }
 
-        function pig()
-        {
-            if(pig_mode==0)
-            {
-                send('fqr/saoraoqi/pig','1');
-                document.getElementById("pig_kuang").style.backgroundColor='rgb(0, 187, 16)';
-                document.getElementById("pig_ball").style.marginLeft='31px';
-                document.getElementById("pig_ball").className='open-kg-ball';
-                document.getElementById("pig_kuang").className="open-kg-kuang";
-            }
-            else
-            {
-                send('fqr/saoraoqi/pig','0');
-                document.getElementById("pig_kuang").style.backgroundColor='rgb(204,204,204)';
-                document.getElementById("pig_ball").style.marginLeft='3px';
-                document.getElementById("pig_ball").className='close-kg-ball';
-                document.getElementById("pig_kuang").className="close-kg-kuang";
-            }
-            pig_mode=!pig_mode;
-        }
         
         var canvas=document.getElementById("myCanvas");
         //var canvas=document.getElementById("myCanvas");
