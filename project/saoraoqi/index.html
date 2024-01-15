@@ -57,6 +57,7 @@
             <center><div style="width: 50px; height: 50px; border-radius: 30px; background-color: rgb(204,204,204); margin-top: 25px; box-shadow: rgb(204,204,204) 1px 1px 8px;" id="bulb"></div></center>
         </div>
 
+
         <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 120px; top: 10px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">灯光</p></center>
             <center>
@@ -66,12 +67,14 @@
             </center>
         </div>
 
+
         <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 230px; top: 10px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">蜂鸣器</p></center>
             <center>
                 <div style="width: 28px; height: 28px; border-radius: 20px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none;" id="fmq_ball" onmousedown="fmq_open()" onmouseup="fmq_close()" onmouseout="fmq_close()"></div>
             </center>
         </div>
+
         
         <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 120px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">温度</p></center>
@@ -80,12 +83,15 @@
             </center>
         </div>
 
+
         <div style="width: 155px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 175px; top: 120px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">湿度</p></center>
             <center>
                 <div style="width: 120px; height: 30px; border-radius: 10px; background-color: rgb(255,255,255); border:1px solid rgb(204,204,204); margin-top: -5px; padding-top: 5px;" id="dht2"> </div>
             </center>
         </div>
+
+
         <div style="width: 100px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 230px;">
             <center><p style="padding-top: 0px; font-size: 16px; user-select: none;">显示小猪</p></center>
             <center>
@@ -94,11 +100,19 @@
                 </div>
             </center>
         </div>
+
+
         <div style="width: 210px; height: 100px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 120px; top: 230px;">
             <input type="file" id="imageInput" accept=".jpg,.jpeg,.png" style="display: none;">
-            <center><button onclick="document.getElementById('imageInput').click()" style="margin-top: 10px;"> 选择图片 </button> <button onclick="sendimage()" style="margin-top: 10px;"> 上传 </button></center>
+            <center>
+                <button onclick="document.getElementById('imageInput').click()" style="margin-top: 10px;">选择图片</button> 
+                <button onclick="document.getElementById('imgs').style.display='block'" style="margin-top: 10px;">其它图片</button>
+                <button onclick="sendimage()" style="margin-top: 10px;">上传</button>
+            </center>
             <center><img src="https://f.fqr-qwq.cn/project/saoraoqi/pig.jpg" alt="选择的图片" id="previewImage" style="width: 62px; height: 62px; border:1px solid rgb(204,204,204); margin-top: 2px;" width="240px" height="240px"></center>
         </div>
+
+
         <div style="width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; display: none;" id="img_kuang">
             <div style="width: 50%; height: 50%; background-color: rgb(255, 255, 255); top: 25%; left: 25%; position: absolute; border-radius: 10px; border: 5px solid rgb(200,200,200);">
                 <p style="font-size: 50px; text-align: center; line-height: 150%;color: rgb(0, 187, 16);" id="img_emoji">▶️</p>
@@ -110,12 +124,38 @@
                 <p style="font-size: 20px; text-align: center; line-height: 400%;" id="img_text">图片传送中</p>
             </div>
         </div>
+
+
+        <div style="width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; display: none; background-color: rgb(200,200,200);" id="imgs"></div>
     </div>
+
+
+
     <canvas id="myCanvas" width="240px" height="240px" style="display: none;"></canvas>
 
     <script>
         document.onselectstart=function(){return false}
         document.ondragstart=function(){return false}
+
+        var cnt_imgs=25;
+        for(var i=1;i<=cnt_imgs;i++)
+        {
+            var newElement = document.createElement("span");
+            newElement.innerHTML = "<img src='https://f.fqr-qwq.cn/project/saoraoqi/img/"+i+".jpg' style='width: 100px; height: 100px;' width='240px' height='240px'> </img>";
+            newElement.style.width="80px";
+            newElement.style.height="80px";
+            newElement.onclick=Function("choose_img("+i+")");
+
+            document.getElementById("imgs").appendChild(newElement);
+        }
+
+        function choose_img(x)
+        {
+            document.getElementById('previewImage').src="https://f.fqr-qwq.cn/project/saoraoqi/img/"+x+".jpg";
+            document.getElementById("imgs").style.display="none";
+        }
+
+
         
         var cnt_msg=0;
         var timer1 = setInterval(function() {
