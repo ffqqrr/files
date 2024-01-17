@@ -118,18 +118,48 @@
 
         <div style="width: 100%; height: 100%; position: absolute; left: 0px; top: 0px; display: none; background-color: rgb(200,200,200);" id="imgs"></div>
     </div>
-
-
-
     <canvas id="myCanvas" width="240px" height="240px" style="display: none;"></canvas>
 
-    <script src="https://f.fqr-qwq.cn/project/wx.js"></script>
+    <script>
+        var overscroll = function(el)
+        {
+            el.addEventListener('touchstart', function() {
+                var top = el.scrollTop
+                , totalScroll = el.scrollHeight
+                , currentScroll = top + el.offsetHeight;
+                //If we're at the top or the bottom of the containers
+                //scroll, push up or down one pixel.
+                //
+                //this prevents the scroll from "passing through" to
+                //the body.
+                if(top === 0) {
+                    el.scrollTop = 1;
+                } else if(currentScroll === totalScroll) {
+                    el.scrollTop = top - 1;
+                }
+            });
+            el.addEventListener('touchmove', function(evt) {
+                //if the content is actually scrollable, i.e. the content is long enough
+                //that scrolling can occur
+                if(el.offsetHeight < el.scrollHeight)
+                evt._isScroller = true;
+            });
+        }
+        overscroll(document.querySelector('.scroll'));
+        document.body.addEventListener('touchmove', function(evt) {
+            //In this case, the default behavior is scrolling the body, which
+            //would result in an overflow. Since we don't want that, we preventDefault.
+            if(!evt._isScroller) {
+            evt.preventDefault();
+            }
+        });
+    </script>
 
     <script>
         document.onselectstart=function(){return false}
         document.ondragstart=function(){return false}
 
-        var cnt_imgs=25;
+        var cnt_imgs=32;
         for(var i=1;i<=cnt_imgs;i++)
         {
             var newElement = document.createElement("span");
