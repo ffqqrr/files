@@ -164,7 +164,7 @@
         var window_width=window.innerWidth;
         var cnt_line=Math.floor(window_width/99.74);
         var line=Math.ceil(cnt_imgs/cnt_line);
-        document.getElementById("imgs").style.height=Math.max(line*99.74+"px",window.innerHeight);
+        document.getElementById("imgs").style.height=Math.max(line*99.74,window.innerHeight)+"px";
         for(var i=1;i<=cnt_imgs;i++)
         {
             var newElement = document.createElement("span");
