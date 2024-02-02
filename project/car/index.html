@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>小车遥控</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<link rel="icon" href="https://f.fqr-qwq.cn/project/saoraoqi/icon.png" type="image/png">
+</head>
+<body style="background-color: rgb(248,248,248)">
+    <script src="https://f.fqr-qwq.cn/project/mqtt.min.js"></script>
+    <style>
+        input[type=range] 
+        {     
+            outline: none;     
+            border-radius: 5px; 
+        }
+    </style>
+    
+    <div>
+        <div style="width: 360px; height: 80px; background-color: rgb(255, 255, 255); border-radius: 10px; border:1px solid rgb(200,200,200); position: absolute; left: 10px; top: 10px;">
+            <center><p style="margin-top: 10px;">速度</p></center>
+            <center><input type="range" name="points" min="0" max="255" id="speed" style="width: 300px;"/> </center>
+        </div>
+
+        <div style="width: 100px; height: 100px; border-radius: 50px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none; position: absolute; left: 10px; top: 100px; font-size: 75px;" id="up" onmousedown="open_k('up')" onmouseup="close_k('up')" onmouseout="close_k('up')">
+            <center>↑</center>
+        </div>
+
+        <div style="width: 100px; height: 100px; border-radius: 50px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none; position: absolute; left: 10px; top: 220px; font-size: 75px;" id="down" onmousedown="open_k('down')" onmouseup="close_k('down')" onmouseout="close_k('down')">
+            <center>↓</center>
+        </div>
+
+        <div style="width: 100px; height: 100px; border-radius: 50px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none; position: absolute; left: 130px; top: 150px; font-size: 75px;" id="left" onmousedown="open_k('left')" onmouseup="close_k('left')" onmouseout="close_k('left')">
+            <center>←</center>
+        </div>
+
+        <div style="width: 100px; height: 100px; border-radius: 50px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none; position: absolute; left: 250px; top: 150px; font-size: 75px;" id="right" onmousedown="open_k('right')" onmouseup="close_k('right')" onmouseout="close_k('right')">
+            <center>→</center>
+        </div>
+
+        <div style="width: 100px; height: 100px; border-radius: 50px; background-color: rgb(255,255,255); border:5px solid rgb(204,204,204); cursor: pointer;  user-select: none; position: absolute; left: 130px; top: 350px; font-size: 75px;" id="fmq" onmousedown="open_k('fmq')" onmouseup="close_k('fmq')" onmouseout="close_k('fmq')">
+            <center>🔈</center>
+        </div>
+
+    </div>
+
+    <script>
+        document.onselectstart=function(){return false}
+        document.ondragstart=function(){return false}
+
+        function getRandomString(length) {
+            var result = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for (var i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+        // 连接选项
+        const options = {
+            clean: true, // true: 清除会话, false: 保留会话
+            connectTimeout: 4000, // 超时时间
+            // 认证信息
+            clientId: 'car-yaokong-'+getRandomString(16),	//客户端ID
+            username: 'FQR', //连接用户名
+            password: 'fqrzn081230',//连接密码，默认为public,新版本登录后台界面会让你修改密码
+            // 心跳时间
+            keepalive: 60,
+        }
+
+        // 连接字符串, 通过协议指定使用的连接方式
+        const connectUrl = 'ws://39.107.120.123:8083/mqtt' //连接服务端地址，注意查看ws协议对应的端口号
+        var client;
+        try {
+            client = mqtt.connect(connectUrl, options)
+        } catch (e) {
+            window.location="http://39.107.120.123/car";
+        }
+
+        client.on('connect', () => {
+            console.log('连接成功')
+            // 订阅多个主题
+            client.subscribe(
+                ['fqr/saoraoqi-o/#'], //主题
+                { qos: 1 },  
+                (err) => {
+                    console.log(err || '订阅成功')
+                },
+            );
+            // 发布消息
+        })
+        //失败重连
+        client.on('reconnect', (error) => {
+            console.log('正在重连:', error)
+        })
+        //连接失败
+        client.on('error', (error) => {
+            console.log('连接失败:', error)
+        })
+        //接收消息
+        client.on('message', (topic, message) => {
+            /*console.log('收到消息：', topic, message.toString())*/
+        })
+        
+        function send(topic,value)
+        {
+            client.publish(topic, value, (err) => {/*console.log(err || ("向“"+topic+"”发送“"+value+'”，发布成功'))*/});
+        }
+
+        send("fqr/car/speed","125");
+
+        /*
+        订阅消息：
+        client.subscribe(
+            ['tourist_enter', 'message_arrived'], //主题
+            { qos: 1 },  
+            (err) => {
+                console.log(err || '订阅成功')
+            },
+        );
+        发布消息：
+        client.publish('tourist_enter', 'Hello EMQ X', (err) => {console.log(err || '发布成功')});
+        接收消息：
+        client.on('message', (topic, message) => {
+            console.log('收到消息：', topic, message.toString())
+        })    
+        */
+
+        var u,d,l,r;
+
+
+        
+        function open_k(s)
+        {
+            send('fqr/car/'+s,'1');
+            document.getElementById(s).style.backgroundColor='rgb(0, 187, 16)';
+            if(s=="up") u=1;
+            else if(s=="down") d=1;
+            else if(s=="left") l=1;
+            else r=1;
+        }
+
+        function close_k(s)
+        {
+            if(s=="up"&&!u) return;
+            else if(s=="down"&&!d) return;
+            else if(s=="left"&&!l) return;
+            else if(s=="right"&&!r) return;
+
+            send('fqr/car/'+s,'0');
+            document.getElementById(s).style.backgroundColor='rgb(255, 255, 255)';
+
+            if(s=="up") u=0;
+            else if(s=="down") d=0;
+            else if(s=="left") l=0;
+            else r=0;
+        }
+        document.getElementById("up").addEventListener("touchstart",function(){open_k("up");});
+        document.getElementById("up").addEventListener("touchend",function(){close_k("up");});
+        document.getElementById("up").addEventListener("mouseout",function(){close_k("up");});
+
+        document.getElementById("down").addEventListener("touchstart",function(){open_k("down");});
+        document.getElementById("down").addEventListener("touchend",function(){close_k("down");});
+        document.getElementById("down").addEventListener("mouseout",function(){close_k("down");});
+
+        document.getElementById("left").addEventListener("touchstart",function(){open_k("left");});
+        document.getElementById("left").addEventListener("touchend",function(){close_k("left");});
+        document.getElementById("left").addEventListener("mouseout",function(){close_k("left");});
+
+        document.getElementById("right").addEventListener("touchstart",function(){open_k("right");});
+        document.getElementById("right").addEventListener("touchend",function(){close_k("right");});
+        document.getElementById("right").addEventListener("mouseout",function(){close_k("right");});
+
+        document.getElementById("fmq").addEventListener("touchstart",function(){open_k("fmq");});
+        document.getElementById("fmq").addEventListener("touchend",function(){close_k("fmq");});
+        document.getElementById("fmq").addEventListener("mouseout",function(){close_k("fmq");});
+
+        var speed_lst=0;
+
+        setInterval(function() {
+            var speed=document.getElementById("speed").value;
+            if(Math.abs(speed_lst-speed)>=10)
+            {
+                send("fqr/car/speed",String(speed));
+                speed_lst=speed;
+            }
+        }, 0);
+
+
+    
+    </script>
+</body>
+</html>
+
